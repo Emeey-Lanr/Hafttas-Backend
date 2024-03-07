@@ -21,7 +21,7 @@ export class UserS {
          
             const addUser = new userModel(userData)
             const saveToDb = await addUser.save()
-            return saveToDb
+            return { userInfo: saveToDb, token }
         } catch (error: any) {
             return new Error(`${error.message}`)
         }

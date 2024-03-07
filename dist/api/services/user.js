@@ -34,7 +34,7 @@ class UserS {
                 const userData = Object.assign(Object.assign({}, body), { img_url: '' });
                 const addUser = new user_model_1.userModel(userData);
                 const saveToDb = yield addUser.save();
-                return saveToDb;
+                return { userInfo: saveToDb, token };
             }
             catch (error) {
                 return new Error(`${error.message}`);
