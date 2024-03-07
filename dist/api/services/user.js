@@ -8,14 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserS = void 0;
 const user_model_1 = require("../models/user.model");
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt_1 = require("../helpers/jwt");
+const search_1 = require("../helpers/search");
+const hash_dehash_1 = require("../helpers/hash.dehash");
 class UserS {
     static signup(body) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,12 +27,34 @@ class UserS {
                 if (userUsernameExist) {
                     return new Error("Username already Exist");
                 }
-                const hashPassword = yield bcryptjs_1.default.hash(password, 5);
+                const hashedPassword = yield (0, hash_dehash_1.hashPassword)(password);
+                console.log(hashedPassword);
                 const token = yield (0, jwt_1.tokenGeneration)('4hrs', { username, email });
-                const userData = Object.assign(Object.assign({}, body), { img_url: '' });
+                const userData = { username, email, password: hashedPassword, img_url: '' };
                 const addUser = new user_model_1.userModel(userData);
                 const saveToDb = yield addUser.save();
                 return { userInfo: saveToDb, token };
+            }
+            catch (error) {
+                return new Error(`${error.message}`);
+            }
+        });
+    }
+    static Signin(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { username, password } = body;
+            try {
+                const findUser = yield (0, search_1.userSearch)({ username });
+                const { status, data } = findUser;
+                if (!status) {
+                    return new Error("Invalid Login Crendentails");
+                }
+                const verifyPassword = yield (0, hash_dehash_1.deHashPassword)(password, `${data.password}`);
+                if (!verifyPassword) {
+                    return new Error("Invalid Pasword");
+                }
+                const token = yield (0, jwt_1.tokenGeneration)("4hrs", { username: data.username, email: data.email });
+                return token;
             }
             catch (error) {
                 return new Error(`${error.message}`);

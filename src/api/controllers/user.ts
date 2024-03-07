@@ -14,4 +14,18 @@ export class UserC {
       return errorResponse(res, 500, `${error.message}`)
     }
   }
+
+  static async Signin(req: Request, res: Response) {
+    try {
+      const signinUser = await UserS.Signin(req.body)
+      if (signinUser instanceof Error) {
+        return errorResponse(res, 404, `${signinUser.message}`)
+      }
+      return succesResponse(res, 202, 'Valid Login Attempt', {token:signinUser})
+
+    } catch (error:any) {
+         return errorResponse(res, 500, `${error.message}`);
+    }
+    
+  }
 }

@@ -1,6 +1,8 @@
 import { userModel } from "../models/user.model";
 import bcrypt from "bcryptjs"
 import { tokenGeneration } from "../helpers/jwt";
+import { userSearch } from "../helpers/search";
+import { deHashPassword, hashPassword } from "../helpers/hash.dehash";
 export class UserS {
     static async signup(body:{username:string, email:string, password:string}) {
         const {username, email, password} = body
@@ -14,10 +16,11 @@ export class UserS {
             if (userUsernameExist) {
                 return new Error("Username already Exist")
             }
-            const hashPassword = await bcrypt.hash(password, 5)
+            const hashedPassword = await hashPassword(password)
+            console.log(hashedPassword)
            const token = await tokenGeneration('4hrs', {username, email})
             
-            const userData = { ...body, img_url: '' }
+            const userData = { username, email, password:hashedPassword, img_url: '' }
          
             const addUser = new userModel(userData)
             const saveToDb = await addUser.save()
@@ -26,4 +29,27 @@ export class UserS {
             return new Error(`${error.message}`)
         }
     }
+
+    static async Signin(body:{username:string, password:string}) {
+      const {username, password} = body
+        try {
+            const findUser = await userSearch({ username })
+           
+            const { status, data } = findUser
+           
+            
+            if (!status) {
+                return new Error("Invalid Login Crendentails")
+            }
+            const verifyPassword = await deHashPassword(password, `${data.password}`)
+            if (!verifyPassword) {
+                return new Error("Invalid Pasword")
+            }
+            const token = await tokenGeneration("4hrs", { username: data.username, email: data.email });
+            return token
+            
+      } catch (error:any) {
+         return new Error(`${error.message}`)
+      }
+  }   
 }

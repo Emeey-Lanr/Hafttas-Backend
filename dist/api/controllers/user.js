@@ -27,5 +27,19 @@ class UserC {
             }
         });
     }
+    static Signin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const signinUser = yield user_1.UserS.Signin(req.body);
+                if (signinUser instanceof Error) {
+                    return (0, response_1.errorResponse)(res, 404, `${signinUser.message}`);
+                }
+                return (0, response_1.succesResponse)(res, 202, 'Valid Login Attempt', { token: signinUser });
+            }
+            catch (error) {
+                return (0, response_1.errorResponse)(res, 500, `${error.message}`);
+            }
+        });
+    }
 }
 exports.UserC = UserC;

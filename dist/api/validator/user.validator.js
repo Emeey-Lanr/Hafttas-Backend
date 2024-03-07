@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userValidator = void 0;
+exports.userSigninValidator = exports.userValidator = void 0;
 const user_validation_schema_1 = require("../utilis/user.validation.schema");
 const response_1 = require("../helpers/response");
 const userValidator = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -20,3 +20,11 @@ const userValidator = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     return next();
 });
 exports.userValidator = userValidator;
+const userSigninValidator = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { error } = user_validation_schema_1.userSigninSchema.validate(req.body);
+    if (error) {
+        return (0, response_1.errorResponse)(res, 400, `${error.message}`);
+    }
+    return next();
+});
+exports.userSigninValidator = userSigninValidator;
