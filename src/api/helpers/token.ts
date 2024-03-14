@@ -10,3 +10,10 @@ export const tokenDataRetrieval = async(token:string) => {
     const data =  jwt.verify(token, `${process.env.TKN_SECRET}`)
     return data
 }
+
+export const passwordResetToken = async () => {
+    const number = `${Math.floor(Math.random() * 9)}${Math.floor(
+      Math.random() * 9
+    )}${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}`;
+     return number
+}

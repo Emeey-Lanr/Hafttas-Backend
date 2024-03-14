@@ -10,3 +10,4 @@ const user_1 = require("../controllers/user");
 exports.userRoutes = express_1.default.Router();
 exports.userRoutes.post('/signup', user_validator_1.userValidator, user_1.UserC.Signup);
 exports.userRoutes.post('/signin', user_validator_1.userSigninValidator, user_1.UserC.Signin);
+exports.userRoutes.post('/forgot/password', user_1.UserC.ForgotPassword);

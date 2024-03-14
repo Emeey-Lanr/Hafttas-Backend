@@ -28,4 +28,27 @@ export class UserC {
     }
     
   }
+
+  static async ForgotPassword(req:Request, res:Response) {
+    try {
+      //  Here a mail sent to the users email that contains 4 codes through his/her
+      // email or username provision
+   const resetForgotPassword = await UserS.ForgotPassword(`${req.body.usernameOrEmail}`)
+   if(resetForgotPassword instanceof Error){
+    return errorResponse(res, 400, `${resetForgotPassword.message}`)
+   }
+   return succesResponse(res, 200, `An email has been sent to @${resetForgotPassword.email} contains a 4 digit pin and expires in 1hr`, resetForgotPassword)
+ 
+    } catch (error:any) {
+     return errorResponse(res, 500, `${error.message}`);
+ }
+  }
+
+  static async forgotPassword4DigitPinsVerification (req:Request, res:Response){
+    try{
+
+    }catch(error){
+
+    }
+  }
 }

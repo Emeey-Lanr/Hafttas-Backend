@@ -1,8 +1,10 @@
 import { userModel } from "../models/user.model";
 import bcrypt from "bcryptjs"
-import { tokenGeneration } from "../helpers/jwt";
+import { passwordResetToken, tokenGeneration } from "../helpers/token";
 import { userSearch } from "../helpers/search";
 import { deHashPassword, hashPassword } from "../helpers/hash.dehash";
+import { usernameOrEmail } from "../helpers/username.email";
+import { sendMail } from "../helpers/mail";
 export class UserS {
     static async signup(body:{username:string, email:string, password:string}) {
         const {username, email, password} = body
@@ -51,5 +53,38 @@ export class UserS {
       } catch (error:any) {
          return new Error(`${error.message}`)
       }
-  }   
+    }   
+    
+
+    static async ForgotPassword(data:string) {
+        try {
+            // check if email or username
+            const checkIfEmailORUsername = await usernameOrEmail(data)
+        // use that to determine what to search via username or email to have the user data
+             const search =  await userSearch(checkIfEmailORUsername === 'username' ? {username:data} : {email:data})
+            if (!search.status) {
+                  return new Error (`Invalid ${checkIfEmailORUsername}`)
+              }
+            // the 4 digit token generated
+            const passwordToken = await passwordResetToken()
+            // Then we save the token and the user's email in a jwt token 
+            const jwtToken = await tokenGeneration('1hr', {email:search.data.email, passwordToken})
+            //   the we send the mail
+            const sendMailToUser = await sendMail(`${search.data.email}`, `${passwordToken}`, `${jwtToken}`)
+            if (sendMailToUser instanceof Error) {
+                return new Error(`${sendMailToUser.message}`)
+            }
+            // Then return the user's email, username and a  jwt token that contains the 4 digit pin
+            return {email:search.data.email,  username:search.data.username , jwtToken}
+        } catch (error) {
+            return new Error("An error occured")
+        }
+    }
+    static async forgotPassword4DigitPinsVerification (){
+        try{
+
+        }catch(error){
+
+        }
+    }
 }

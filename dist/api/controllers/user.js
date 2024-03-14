@@ -41,5 +41,16 @@ class UserC {
             }
         });
     }
+    static ForgotPassword(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                //  Here a mail sent to the users email that contains 4 codes through his/her
+                // email or username provision
+                const resetForgotPassword = yield user_1.UserS.ForgotPassword(`${req.body.usernameOrEmail}`);
+            }
+            catch (error) {
+            }
+        });
+    }
 }
 exports.UserC = UserC;
