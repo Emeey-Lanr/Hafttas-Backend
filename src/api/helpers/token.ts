@@ -6,9 +6,14 @@ export const tokenGeneration = async(time:string, data:any) => {
     return token
 }
 
-export const tokenDataRetrieval = async(token:string) => {
-    const data =  jwt.verify(token, `${process.env.TKN_SECRET}`)
-    return data
+export const tokenDataRetrieval = async (token: string) => {
+    try {
+            const data = jwt.verify(token, `${process.env.TKN_SECRET}`);
+            return data;
+    } catch (error:any) {
+        return new Error(`${error.message}`)
+    }
+
 }
 
 export const passwordResetToken = async () => {

@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { UserS } from "../services/user";
+import { UserS } from "../services/auth";
 import { errorResponse, succesResponse } from "../helpers/response";
 
 export class UserC {
@@ -46,9 +46,43 @@ export class UserC {
 
   static async forgotPassword4DigitPinsVerification (req:Request, res:Response){
     try{
+      const verify = await UserS.forgotPassword4DigitPinsVerification(req.body)
+      if (verify instanceof Error) {
+        return errorResponse(res, 400, `${verify.message}`)
+      }
+      // The token sent will be used in the frontend as resetpassword?verificationPin={jwtToken}
+      return succesResponse(res, 200, 'Pin validation attemmpt valid', {jwtToken:verify})
+    }catch(error:any){
+     return errorResponse(res, 404, `${error.message}`);
+    }
+  }
 
-    }catch(error){
+  static async verifyNewPasswordToken(req:Request, res:Response) {
+    try {
+      const token = req.headers.authorization?.split(" ")
+      // The token will be verified on the onLoad of the page to get the user's data
+      const verify = await UserS.verifyNewPasswordToken(`${token}`)
+      if (verify instanceof Error) {
+     return errorResponse(res, 400, `${verify.message}`)
+      }
+         return succesResponse(res, 200, ' valid', {email:verify.email})
 
+    } catch (error:any) {
+      return errorResponse(res, 404, `${error.message}`);
+    }
+  }
+
+  static async resetPassword(req: Request, res:Response) {
+    try {
+      const newPassword = await UserS.resetPassword(req.body)
+      if (newPassword instanceof Error) {
+             return errorResponse(res, 400, `${newPassword.message}`);
+      }
+         return succesResponse(res, 200, "Password reset done succesfully", {});
+    } catch (error:any) {
+      return errorResponse(res, 404, `${error.message}`);
     }
   }
 }
+
+
