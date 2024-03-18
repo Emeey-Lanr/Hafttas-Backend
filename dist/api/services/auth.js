@@ -31,8 +31,13 @@ class UserS {
                 }
                 const hashedPassword = yield (0, hash_dehash_1.hashPassword)(password);
                 console.log(hashedPassword);
-                const token = yield (0, token_1.tokenGeneration)('4hrs', { username, email });
-                const userData = { username, email, password: hashedPassword, img_url: '' };
+                const token = yield (0, token_1.tokenGeneration)("4hrs", { username, email });
+                const userData = {
+                    username,
+                    email,
+                    password: hashedPassword,
+                    img_url: "",
+                };
                 const addUser = new user_model_1.userModel(userData);
                 const saveToDb = yield addUser.save();
                 return { userInfo: saveToDb, token };
@@ -55,7 +60,10 @@ class UserS {
                 if (!verifyPassword) {
                     return new Error("Invalid Pasword");
                 }
-                const token = yield (0, token_1.tokenGeneration)("4hrs", { username: data.username, email: data.email });
+                const token = yield (0, token_1.tokenGeneration)("4hrs", {
+                    username: data.username,
+                    email: data.email,
+                });
                 return token;
             }
             catch (error) {
@@ -69,23 +77,93 @@ class UserS {
                 // check if email or username
                 const checkIfEmailORUsername = yield (0, username_email_1.usernameOrEmail)(data);
                 // use that to determine what to search via username or email to have the user data
-                const search = yield (0, search_1.userSearch)(checkIfEmailORUsername === 'username' ? { username: data } : { email: data });
+                const search = yield (0, search_1.userSearch)(checkIfEmailORUsername === "username"
+                    ? { username: data }
+                    : { email: data });
                 if (!search.status) {
                     return new Error(`Invalid ${checkIfEmailORUsername}`);
                 }
                 // the 4 digit token generated
                 const passwordToken = yield (0, token_1.passwordResetToken)();
-                // Then we save the token and the user's email in a jwt token 
-                const jwtToken = yield (0, token_1.tokenGeneration)('1hr', { email: search.data.email, passwordToken });
+                // Then we save the token and the user's email in a jwt token
+                const jwtToken = yield (0, token_1.tokenGeneration)("1hr", {
+                    email: search.data.email,
+                    passwordToken,
+                });
                 //   the we send the mail
                 const sendMailToUser = yield (0, mail_1.sendMail)(`${search.data.email}`, `${passwordToken}`, `${jwtToken}`);
                 if (sendMailToUser instanceof Error) {
                     return new Error(`${sendMailToUser.message}`);
                 }
-                return { email: search.data.email, username: search.data.username, jwtToken };
+                // Then return the user's email, username and a  jwt token that contains the 4 digit pin
+                return {
+                    email: search.data.email,
+                    username: search.data.username,
+                    jwtToken,
+                };
             }
             catch (error) {
                 return new Error("An error occured");
+            }
+        });
+    }
+    static forgotPassword4DigitPinsVerification(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // we check the token data
+                const checkTokenData = (yield (0, token_1.tokenDataRetrieval)(data.jwtToken));
+                if (checkTokenData instanceof Error) {
+                    return new Error(checkTokenData.message);
+                }
+                //verify it with the user's pin
+                if (String(data.pin) !== checkTokenData.passwordToken) {
+                    return new Error("Invalid Reset Pin");
+                }
+                // Generate a token which is verified on the onload of the new password page at
+                // the frontend
+                const generateToken = yield (0, token_1.tokenGeneration)("1hr", {
+                    verification: true,
+                    email: checkTokenData.email,
+                });
+                return generateToken;
+            }
+            catch (error) {
+                return new Error(`${error.message}`);
+            }
+        });
+    }
+    static verifyNewPasswordToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const checkToken = (yield (0, token_1.tokenDataRetrieval)(token));
+                if (checkToken instanceof Error) {
+                    return new Error("New Password attempt not allowed");
+                }
+                return checkToken;
+            }
+            catch (error) {
+                return new Error("An error occured");
+            }
+        });
+    }
+    static resetPassword(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (data.password.length < 6) {
+                    return new Error("Password length must be up or greater than 6");
+                }
+                const hashedPassword = yield (0, hash_dehash_1.hashPassword)(`${data.password}`);
+                const userData = yield (0, search_1.userSearch)({ email: data.email });
+                if (!userData.status) {
+                    return new Error("User doesn't exist");
+                }
+                userData.data.password = hashedPassword;
+                const updatePassword = yield user_model_1.userModel.findOneAndUpdate({ email: data.email }, userData.data);
+                const userDataInfo = yield (0, search_1.userSearch)({ email: data.email });
+                return userDataInfo.data;
+            }
+            catch (error) {
+                return new Error("An error occured, resetting newPassword");
             }
         });
     }
