@@ -59,7 +59,7 @@ export class UserC {
 
   static async verifyNewPasswordToken(req:Request, res:Response) {
     try {
-      const token = req.headers.authorization?.split(" ")
+      const token = req.headers.authorization?.split(" ")[1]
       // The token will be verified on the onLoad of the page to get the user's data
       const verify = await UserS.verifyNewPasswordToken(`${token}`)
       if (verify instanceof Error) {
@@ -78,8 +78,9 @@ export class UserC {
       if (newPassword instanceof Error) {
              return errorResponse(res, 400, `${newPassword.message}`);
       }
-         return succesResponse(res, 200, "Password reset done succesfully", {});
-    } catch (error:any) {
+         return succesResponse(res, 200, "Password reset done succesfully", {user:newPassword});
+    } catch (error: any) {
+      
       return errorResponse(res, 404, `${error.message}`);
     }
   }

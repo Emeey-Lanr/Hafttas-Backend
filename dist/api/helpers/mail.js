@@ -52,7 +52,7 @@ const emailTextF = (numberToken, jwtToken) => {
             "
           >
             <a
-              href="http://localhost:3000/forgot/password/pin?verification=${jwtToken}"
+              href="http://localhost:3000/forgotpassword/pin?verification=${jwtToken}"
               style="color: white; text-decoration: none; font-family: cursive;" 
               >Click </a
             >

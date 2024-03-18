@@ -22,8 +22,13 @@ const tokenGeneration = (time, data) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.tokenGeneration = tokenGeneration;
 const tokenDataRetrieval = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = jsonwebtoken_1.default.verify(token, `${process.env.TKN_SECRET}`);
-    return data;
+    try {
+        const data = jsonwebtoken_1.default.verify(token, `${process.env.TKN_SECRET}`);
+        return data;
+    }
+    catch (error) {
+        return new Error(`${error.message}`);
+    }
 });
 exports.tokenDataRetrieval = tokenDataRetrieval;
 const passwordResetToken = () => __awaiter(void 0, void 0, void 0, function* () {

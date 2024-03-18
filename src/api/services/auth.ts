@@ -161,8 +161,8 @@ export class UserS {
 
       userData.data.password = hashedPassword
       const updatePassword = await userModel.findOneAndUpdate({email:data.email}, userData.data)
-
-
+      const userDataInfo = await userSearch({ email:data.email}) 
+      return userDataInfo.data
     } catch (error) {
        return new Error("An error occured, resetting newPassword");
     }
