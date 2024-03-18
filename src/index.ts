@@ -19,7 +19,7 @@ const URI = process.env.DB_URI
 app.listen(PORT, async () => {
     try {
         const connectDb = await mongoose.connect(`${URI}`)
-        console.log(`app has connected on port ${PORT}`)
+        console.log(`app has connected`)
     } catch (error:any) {
         console.log(error.message)
     }

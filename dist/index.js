@@ -24,7 +24,7 @@ const URI = process.env.DB_URI;
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const connectDb = yield mongoose_1.default.connect(`${URI}`);
-        console.log(`app has connected on port ${PORT}`);
+        console.log(`app has connected`);
     }
     catch (error) {
         console.log(error.message);
