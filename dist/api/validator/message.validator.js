@@ -9,23 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProducerC = void 0;
-const producer_1 = require("../services/producer");
+exports.validateOnCreate = void 0;
+const message_1 = require("../utilis/message");
 const response_1 = require("../helpers/response");
-class ProducerC {
-    static createMessageBox(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const create = yield producer_1.ProducerS.createMessageBox(req.body);
-                if (create instanceof Error) {
-                    return (0, response_1.errorResponse)(res, 400, `${create.message}`);
-                }
-                return (0, response_1.succesResponse)(res, 200, 'Created succesfully', create);
-            }
-            catch (error) {
-                return (0, response_1.errorResponse)(res, 400, `An error occured creating`);
-            }
-        });
+const validateOnCreate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const validate = message_1.messageSchema.validate(req.body);
+    if (validate.error) {
+        return (0, response_1.errorResponse)(res, 400, `${validate.error.message}`);
     }
-}
-exports.ProducerC = ProducerC;
+    return next();
+});
+exports.validateOnCreate = validateOnCreate;

@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passwordResetToken = exports.tokenDataRetrieval = exports.tokenGeneration = void 0;
+exports.generateLink = exports.passwordResetToken = exports.tokenDataRetrieval = exports.tokenGeneration = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = require("../middleware/dotenv");
+// import { nanoid } from "nanoid"
 (0, dotenv_1.dotenvF)();
 const tokenGeneration = (time, data) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign(data, `${process.env.TKN_SECRET}`, { expiresIn: `${time}` });
@@ -36,3 +37,10 @@ const passwordResetToken = () => __awaiter(void 0, void 0, void 0, function* () 
     return number;
 });
 exports.passwordResetToken = passwordResetToken;
+const generateLink = (username) => {
+    const time = new Date();
+    const currentTime = time.getTime();
+    const link = `${currentTime}` + username;
+    return currentTime;
+};
+exports.generateLink = generateLink;
