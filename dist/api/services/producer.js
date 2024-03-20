@@ -54,11 +54,17 @@ class ProducerS {
             }
         });
     }
-    static deleteAnoymous() {
+    static deleteAnoymous(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { _id, username } = data;
             try {
+                const deleteAnonymousData = yield message_1.messageModel.findOneAndDelete({ _id });
+                const findAll = yield message_1.messageModel.find({ username });
+                return findAll;
             }
-            catch (error) { }
+            catch (error) {
+                return new Error(`${error.message}`);
+            }
         });
     }
     static getSingleAnonymousDetails() {

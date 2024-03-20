@@ -40,9 +40,17 @@ export class ProducerS {
           return new Error("An error occured getting list")
     }
   }
-  static async deleteAnoymous() {
-    try {
-    } catch (error: any) {}
+  static async deleteAnoymous(data:{_id:string, username:string}) {
+      const {_id, username}  = data
+      try {
+          
+          const deleteAnonymousData = await messageModel.findOneAndDelete({ _id })
+          const findAll = await messageModel.find({ username })
+          return findAll
+          
+      } catch (error: any) {
+          return new Error(`${error.message}`)
+    }
   }
   static async getSingleAnonymousDetails() {
     try {

@@ -45,7 +45,13 @@ class ProducerC {
     }
     static deleteAnoymous(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(req.query, req.params);
             try {
+                const deleteAnonymousData = yield producer_1.ProducerS.deleteAnoymous({ _id: `${req.params._id}`, username: `${req.query.username}` });
+                if (deleteAnonymousData instanceof Error) {
+                    return (0, response_1.errorResponse)(res, 400, `${deleteAnonymousData.message}`);
+                }
+                return (0, response_1.succesResponse)(res, 200, "deleted succesfully", deleteAnonymousData);
             }
             catch (error) { }
         });

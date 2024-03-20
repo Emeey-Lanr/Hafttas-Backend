@@ -27,8 +27,14 @@ export class ProducerC {
     }
   }
   static async deleteAnoymous(req: Request, res: Response) {
-     try {
-     } catch (error: any) {}
+    try {
+      const deleteAnonymousData = await ProducerS.deleteAnoymous({ _id: `${req.params._id}`, username:`${req.query.username}` })
+      if (deleteAnonymousData instanceof Error) {
+         return errorResponse(res, 400, `${deleteAnonymousData.message}`);
+      }
+        return succesResponse(res, 200, "deleted succesfully", deleteAnonymousData);
+
+    } catch (error: any) { }
   }
   static async getSingleAnonymousDetails(req: Request, res: Response) {
     try {
