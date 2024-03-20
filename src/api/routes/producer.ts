@@ -5,3 +5,4 @@ import { ProducerC } from "../controllers/producer"
 export const producerRoutes = express.Router()
 
 producerRoutes.post("/create", validateOnCreate, ProducerC.createMessageBox)
+producerRoutes.get("/get/all/anonymous", ProducerC.getAllAnonymousTitle)

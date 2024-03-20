@@ -20,11 +20,52 @@ class ProducerC {
                 if (create instanceof Error) {
                     return (0, response_1.errorResponse)(res, 400, `${create.message}`);
                 }
-                return (0, response_1.succesResponse)(res, 200, 'Created succesfully', create);
+                return (0, response_1.succesResponse)(res, 200, "Created succesfully", create);
             }
             catch (error) {
                 return (0, response_1.errorResponse)(res, 400, `An error occured creating`);
             }
+        });
+    }
+    static getAllAnonymousTitle(req, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+                const getAll = yield producer_1.ProducerS.getAllAnonymousTitle(`${token}`);
+                if (getAll instanceof Error) {
+                    return (0, response_1.errorResponse)(res, 400, `${getAll.message}`);
+                }
+                return (0, response_1.succesResponse)(res, 200, `${getAll.length < 0 ? 'List is empty' : 'Curated succesfully'}`, getAll);
+            }
+            catch (error) {
+                return (0, response_1.errorResponse)(res, 400, `An error occured getting`);
+            }
+        });
+    }
+    static deleteAnoymous(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
+        });
+    }
+    static getSingleAnonymousDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
+        });
+    }
+    static addMessage(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
+    static deleteMessage(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
         });
     }
 }

@@ -30,14 +30,52 @@ class ProducerS {
                 // creaet a new message box
                 const link = (0, token_1.generateLink)(data.username);
                 const messageData = Object.assign(Object.assign({}, data), { link });
-                console.log(messageData);
-                const createNewMessage = new message_1.messageModel(data);
+                const createNewMessage = new message_1.messageModel(messageData);
                 const saveToDb = yield createNewMessage.save();
                 return saveToDb;
             }
             catch (error) {
                 return new Error(`${error.message}`);
             }
+        });
+    }
+    static getAllAnonymousTitle(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                //   use the user's signin token to fetch the user's data
+                const getUserData = yield (0, token_1.tokenDataRetrieval)(token);
+                //   use the data fetched to find all the anonymous created
+                const getAll = yield message_1.messageModel.find({ username: getUserData.username });
+                //  if it's emepty return an error
+                return getAll;
+            }
+            catch (error) {
+                return new Error("An error occured getting list");
+            }
+        });
+    }
+    static deleteAnoymous() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
+        });
+    }
+    static getSingleAnonymousDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
+        });
+    }
+    static addMessage() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    static deleteMessage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+            }
+            catch (error) { }
         });
     }
 }

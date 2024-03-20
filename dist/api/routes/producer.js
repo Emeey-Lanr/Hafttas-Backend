@@ -9,3 +9,4 @@ const message_1 = require("../validator/message");
 const producer_1 = require("../controllers/producer");
 exports.producerRoutes = express_1.default.Router();
 exports.producerRoutes.post("/create", message_1.validateOnCreate, producer_1.ProducerC.createMessageBox);
+exports.producerRoutes.get("/get/all/anonymous", producer_1.ProducerC.getAllAnonymousTitle);

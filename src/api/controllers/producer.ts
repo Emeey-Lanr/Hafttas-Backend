@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ProducerS } from "../services/producer";
 import { errorResponse, succesResponse } from "../helpers/response";
+import { MessageI } from "../interface/message";
 export class ProducerC {
   static async createMessageBox(req: Request, res: Response) {
     try {
@@ -15,9 +16,14 @@ export class ProducerC {
   }
   static async getAllAnonymousTitle(req: Request, res: Response) {
     try {
-      
+      const token = req.headers.authorization?.split(" ")[1];
+      const getAll = await ProducerS.getAllAnonymousTitle(`${token}`) as MessageI[]
+      if (getAll instanceof Error) {
+        return errorResponse(res, 400, `${getAll.message}`);
+      }
+         return succesResponse(res, 200, `${getAll.length < 0 ? 'List is empty' : 'Curated succesfully'}`, getAll);
     } catch (error:any) {
-      
+       return errorResponse(res, 400, `An error occured getting`);
     }
   }
   static async deleteAnoymous(req: Request, res: Response) {
@@ -25,8 +31,12 @@ export class ProducerC {
      } catch (error: any) {}
   }
   static async getSingleAnonymousDetails(req: Request, res: Response) {
- try {
+    try {
+   
  } catch (error: any) {}
+  }
+  static async addMessage(req: Request, res: Response) {
+    
   }
   static async deleteMessage(req: Request, res: Response) {
      try {
