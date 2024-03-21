@@ -90,9 +90,15 @@ export class ProducerC {
     
   }
 
-
   static async deleteMessage(req: Request, res: Response) {
-     try {
-     } catch (error: any) {}
+    try {
+      const deleteMsg = await ProducerS.deleteMessage(req.body) 
+      if (deleteMsg instanceof Error) {
+        return errorResponse(res, 400, `${deleteMsg.message}`)
+      }
+      return succesResponse (res, 200, 'Message deleted successfully', deleteMsg)
+    } catch (error: any) {
+         return errorResponse(res, 400, `An error occured deleteing message`);
+     }
   }
 }

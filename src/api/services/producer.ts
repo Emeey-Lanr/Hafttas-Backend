@@ -96,12 +96,15 @@ export class ProducerS {
   static async addMessage(data:AddMessageBodyI ) {
     const {username, date,time,message,link} = data
       try {
+        //   we search if a messagemodel has the link and username
           const searchMessageBox = await messageSearch({ username, link })
           if (!searchMessageBox.status ) {
               return new Error("link doesn't exist")
           }
+        //   if it does exist, we push into the message box
           let messageDetails = {message, time, date} 
           searchMessageBox.data.messageBox.push(messageDetails)
+        //   and update it with the updated data
           const update = await messageModel.findOneAndUpdate({ username, link }, searchMessageBox.data)
           
     } catch (error:any) {
@@ -109,8 +112,18 @@ export class ProducerS {
        }
       
   }
-  static async deleteMessage() {
-    try {
-    } catch (error: any) {}
+  static async deleteMessage(data:{db_id:string, message_id:number}) {
+      try {
+          const searchMessageBox = await messageSearch({ _id: data.db_id })
+          if (!searchMessageBox.status) {
+              return new Error("Invalid db id")
+          }
+          searchMessageBox.data.messageBox = searchMessageBox.data.messageBox.filter((_:string, id:number)=> id !== data.message_id)
+          const update = await messageModel.findByIdAndUpdate({ _id: data.db_id }, searchMessageBox.data)
+          const updatedVersion = await messageSearch({ _id: data.db_id })
+          return updatedVersion.data
+      } catch (error: any) {
+          return new Error(`${error.message}`)
+       }
   }
 }

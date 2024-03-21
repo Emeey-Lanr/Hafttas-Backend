@@ -110,8 +110,15 @@ class ProducerC {
     static deleteMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const deleteMsg = yield producer_1.ProducerS.deleteMessage(req.body);
+                if (deleteMsg instanceof Error) {
+                    return (0, response_1.errorResponse)(res, 400, `${deleteMsg.message}`);
+                }
+                return (0, response_1.succesResponse)(res, 200, 'Message deleted successfully', deleteMsg);
             }
-            catch (error) { }
+            catch (error) {
+                return (0, response_1.errorResponse)(res, 400, `An error occured deleteing message`);
+            }
         });
     }
 }

@@ -14,3 +14,4 @@ exports.producerRoutes.delete("/delete/:_id", producer_1.ProducerC.deleteAnoymou
 exports.producerRoutes.get("/fetch/single/anonymous/data", producer_1.ProducerC.getSingleAnonymousDetails);
 exports.producerRoutes.get("/fetch/data/on/message", producer_1.ProducerC.getAnoymousDetailsWhenUAboutToSendAMessage);
 exports.producerRoutes.post("/send", message_1.validateOnSend, producer_1.ProducerC.addMessage);
+exports.producerRoutes.put("/delete/anoymous/message", producer_1.ProducerC.deleteMessage);

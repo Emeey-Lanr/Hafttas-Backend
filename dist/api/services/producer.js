@@ -113,12 +113,15 @@ class ProducerS {
         return __awaiter(this, void 0, void 0, function* () {
             const { username, date, time, message, link } = data;
             try {
+                //   we search if a messagemodel has the link and username
                 const searchMessageBox = yield (0, search_1.messageSearch)({ username, link });
                 if (!searchMessageBox.status) {
                     return new Error("link doesn't exist");
                 }
+                //   if it does exist, we push into the message box
                 let messageDetails = { message, time, date };
                 searchMessageBox.data.messageBox.push(messageDetails);
+                //   and update it with the updated data
                 const update = yield message_1.messageModel.findOneAndUpdate({ username, link }, searchMessageBox.data);
             }
             catch (error) {
@@ -126,11 +129,21 @@ class ProducerS {
             }
         });
     }
-    static deleteMessage() {
+    static deleteMessage(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const searchMessageBox = yield (0, search_1.messageSearch)({ _id: data.db_id });
+                if (!searchMessageBox.status) {
+                    return new Error("Invalid db id");
+                }
+                searchMessageBox.data.messageBox = searchMessageBox.data.messageBox.filter((_, id) => id !== data.message_id);
+                const update = yield message_1.messageModel.findByIdAndUpdate({ _id: data.db_id }, searchMessageBox.data);
+                const updatedVersion = yield (0, search_1.messageSearch)({ _id: data.db_id });
+                return updatedVersion.data;
             }
-            catch (error) { }
+            catch (error) {
+                return new Error(`${error.message}`);
+            }
         });
     }
 }
