@@ -105,14 +105,25 @@ class ProducerS {
                 return searchMessageBox.data;
             }
             catch (error) {
+                return new Error(`${error.message}`);
             }
         });
     }
     static addMessage(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { username, date, time, message, link } = data;
             try {
+                const searchMessageBox = yield (0, search_1.messageSearch)({ username, link });
+                if (!searchMessageBox.status) {
+                    return new Error("link doesn't exist");
+                }
+                let messageDetails = { message, time, date };
+                searchMessageBox.data.messageBox.push(messageDetails);
+                const update = yield message_1.messageModel.findOneAndUpdate({ username, link }, searchMessageBox.data);
             }
-            catch (error) { }
+            catch (error) {
+                return new Error(`${error.message}`);
+            }
         });
     }
     static deleteMessage() {

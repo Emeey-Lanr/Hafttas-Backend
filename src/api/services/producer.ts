@@ -1,6 +1,6 @@
 import { messageSearch, userSearch } from "../helpers/search";
 import { generateLink, tokenDataRetrieval } from "../helpers/token";
-import { MessageI } from "../interface/message";
+import { AddMessageBodyI, MessageI } from "../interface/message";
 import { messageModel } from "../models/message";
 
 export class ProducerS {
@@ -88,14 +88,26 @@ export class ProducerS {
        }
        return searchMessageBox.data
        
-   } catch (error) {
-    
+   } catch (error:any) {
+    return new Error(`${error.message}`)
    }
   }
 
-  static async addMessage(data: { message: string }) {
-    try {
-    } catch (error) {}
+  static async addMessage(data:AddMessageBodyI ) {
+    const {username, date,time,message,link} = data
+      try {
+          const searchMessageBox = await messageSearch({ username, link })
+          if (!searchMessageBox.status ) {
+              return new Error("link doesn't exist")
+          }
+          let messageDetails = {message, time, date} 
+          searchMessageBox.data.messageBox.push(messageDetails)
+          const update = await messageModel.findOneAndUpdate({ username, link }, searchMessageBox.data)
+          
+    } catch (error:any) {
+         return new Error(`${error.message}`);
+       }
+      
   }
   static async deleteMessage() {
     try {

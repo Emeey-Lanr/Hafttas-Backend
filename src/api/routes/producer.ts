@@ -1,5 +1,5 @@
 import express from "express"
-import { validateOnCreate } from "../validator/message"
+import { validateOnCreate, validateOnSend } from "../validator/message"
 import { ProducerC } from "../controllers/producer"
 
 export const producerRoutes = express.Router()
@@ -9,3 +9,4 @@ producerRoutes.get("/get/all/anonymous", ProducerC.getAllAnonymousTitle)
 producerRoutes.delete("/delete/:_id", ProducerC.deleteAnoymous)
 producerRoutes.get("/fetch/single/anonymous/data", ProducerC.getSingleAnonymousDetails)
 producerRoutes.get("/fetch/data/on/message", ProducerC.getAnoymousDetailsWhenUAboutToSendAMessage)
+producerRoutes.post("/send",validateOnSend,  ProducerC.addMessage)

@@ -7,3 +7,11 @@ export const messageSchema = Joi.object({
   limit: Joi.number().required(),
   messageBox: Joi.array().required(),
 });
+
+export  const sendMessageSchema = Joi.object({
+  username: Joi.string().required(),
+  link:Joi.string().required(),
+  message: Joi.string().max(250).required(),
+  date: Joi.string().required(),
+  time:Joi.string().required(),
+})

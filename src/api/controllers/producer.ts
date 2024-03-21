@@ -79,9 +79,13 @@ export class ProducerC {
   static async addMessage(req: Request, res: Response) {
     try {
       const addMessageInsideBox = await ProducerS.addMessage(req.body)
-      
+
+      if (addMessageInsideBox instanceof Error) {
+         return errorResponse(res, 400, `${addMessageInsideBox.message}`);
+      }
+      return succesResponse(res, 200, "message delivered successfully", {});
      } catch (error: any) { 
-       
+           return errorResponse(res, 400, `An error occured adding message`);
     }
     
   }
