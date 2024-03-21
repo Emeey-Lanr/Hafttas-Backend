@@ -43,9 +43,11 @@ class ProducerS {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 //   use the user's signin token to fetch the user's data
-                const getUserData = yield (0, token_1.tokenDataRetrieval)(token);
+                const getUserData = (yield (0, token_1.tokenDataRetrieval)(token));
                 //   use the data fetched to find all the anonymous created
-                const getAll = yield message_1.messageModel.find({ username: getUserData.username });
+                const getAll = yield message_1.messageModel.find({
+                    username: getUserData.username,
+                });
                 //  if it's emepty return an error
                 return getAll;
             }
@@ -58,7 +60,9 @@ class ProducerS {
         return __awaiter(this, void 0, void 0, function* () {
             const { _id, username } = data;
             try {
+                //   delete via the params id
                 const deleteAnonymousData = yield message_1.messageModel.findOneAndDelete({ _id });
+                //   get the remaining data vai the query id
                 const findAll = yield message_1.messageModel.find({ username });
                 return findAll;
             }
@@ -67,15 +71,49 @@ class ProducerS {
             }
         });
     }
-    static getSingleAnonymousDetails() {
+    static getSingleAnonymousDetails(_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                //   we use the db id to fech t
+                const messageBoxSearch = yield (0, search_1.messageSearch)({ _id });
+                if (!messageBoxSearch.status) {
+                    return new Error("Unable to fetch data");
+                }
+                return messageBoxSearch.data;
+            }
+            catch (error) {
+                return new Error("An error occured fetching data");
+            }
+        });
+    }
+    static getAnoymousDetailsWhenUAboutToSendAMessage(username, link) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // This is a get request for getting the details
+            // about the link before those using the link send a message
+            try {
+                const searchUser = yield (0, search_1.userSearch)({ username });
+                if (!searchUser.status) {
+                    return new Error("Access not available");
+                }
+                const searchMessageBox = yield (0, search_1.messageSearch)({ link });
+                if (!searchMessageBox.status) {
+                    return new Error("Acsess not available");
+                }
+                if (searchUser.data.username !== searchMessageBox.data.username) {
+                    return new Error("Invalid Link access");
+                }
+                return searchMessageBox.data;
+            }
+            catch (error) {
+            }
+        });
+    }
+    static addMessage(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
             }
             catch (error) { }
         });
-    }
-    static addMessage() {
-        return __awaiter(this, void 0, void 0, function* () { });
     }
     static deleteMessage() {
         return __awaiter(this, void 0, void 0, function* () {

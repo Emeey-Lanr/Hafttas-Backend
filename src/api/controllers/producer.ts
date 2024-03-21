@@ -26,6 +26,7 @@ export class ProducerC {
        return errorResponse(res, 400, `An error occured getting`);
     }
   }
+
   static async deleteAnoymous(req: Request, res: Response) {
     try {
       const deleteAnonymousData = await ProducerS.deleteAnoymous({ _id: `${req.params._id}`, username:`${req.query.username}` })
@@ -34,16 +35,58 @@ export class ProducerC {
       }
         return succesResponse(res, 200, "deleted succesfully", deleteAnonymousData);
 
-    } catch (error: any) { }
+    } catch (error: any) {
+             return errorResponse(res, 400, `An error occured deleting`);
+     }
   }
+
   static async getSingleAnonymousDetails(req: Request, res: Response) {
     try {
-   
- } catch (error: any) {}
+      // on the frontend the url/title/dbid
+      const dbId = req.headers.authorization?.split(" ")[1];
+      const getData = await ProducerS.getSingleAnonymousDetails(`${dbId}`)
+      if (getData instanceof Error) {
+            return errorResponse(res, 400, `${getData.message}`);
+      }
+      
+              return succesResponse(res, 200, "data fetched succesfully",  getData);
+
+    } catch (error: any) {
+               return errorResponse(res, 400, `An error occured fetching data`);
+ }
   }
-  static async addMessage(req: Request, res: Response) {
+  
+  static async getAnoymousDetailsWhenUAboutToSendAMessage(req: Request, res: Response) {
+    // This is a get request for getting the details
+    // about the link before those using the link send a message
+    // in the bearer token is should be `bearer {username}<*>{link}`
+   try {
+     const details = req.headers.authorization?.split(" ")[1].split("<*>") as [string, string]  
+     const getDetails = await ProducerS.getAnoymousDetailsWhenUAboutToSendAMessage(`${details[0]}`, `${details[1]}`)
+        if (getDetails instanceof Error) {
+          return errorResponse(res, 400, `${getDetails.message}`);
+        }
+
+        return succesResponse(res, 200, "data fetched succesfully", getDetails);
+
+   } catch (error) {
+           return errorResponse(res, 400, `An error occured fetching data`);
+   }
     
   }
+
+
+  static async addMessage(req: Request, res: Response) {
+    try {
+      const addMessageInsideBox = await ProducerS.addMessage(req.body)
+      
+     } catch (error: any) { 
+       
+    }
+    
+  }
+
+
   static async deleteMessage(req: Request, res: Response) {
      try {
      } catch (error: any) {}
