@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userSearch = void 0;
+exports.messageSearch = exports.userSearch = void 0;
 const user_model_1 = require("../models/user.model");
+const message_1 = require("../models/message");
 const userSearch = (searchData) => __awaiter(void 0, void 0, void 0, function* () {
     const exist = yield user_model_1.userModel.findOne(searchData);
     let existInfo = { data: exist, status: true };
@@ -21,3 +22,16 @@ const userSearch = (searchData) => __awaiter(void 0, void 0, void 0, function* (
     return existInfo;
 });
 exports.userSearch = userSearch;
+const messageSearch = (searchData) => __awaiter(void 0, void 0, void 0, function* () {
+    const exist = yield message_1.messageModel.findOne(searchData);
+    let existInfo = {
+        data: exist,
+        status: true,
+    };
+    if (exist) {
+        return existInfo;
+    }
+    existInfo.status = false;
+    return existInfo;
+});
+exports.messageSearch = messageSearch;
