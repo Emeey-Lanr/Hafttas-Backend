@@ -1,5 +1,5 @@
 import express from "express";
-import { userSigninValidator, userValidator,  } from "../validator/user.validator";
+import { userSigninValidator, userValidator,  } from "../validator/user";
 import { UserC } from "../controllers/auth";
 export const userAuthRoutes = express.Router();
 userAuthRoutes.post('/signup', userValidator, UserC.Signup)
