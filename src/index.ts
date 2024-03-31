@@ -6,8 +6,8 @@ const app: Express = express()
 middleware(app)
 dotenvF()
 
-const PORT = process.env.PORT_NUMB
-const URI = process.env.DB_URI
+const PORT = process.env.PORT
+const URI = process.env.URI
 
 
 
